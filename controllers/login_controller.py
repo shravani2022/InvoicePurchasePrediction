@@ -9,7 +9,6 @@ def home():
     
 @login_bp.route('/login', methods=['POST'])
 def login():
-    
     username = request.form['username']
     password = request.form['password']
     
