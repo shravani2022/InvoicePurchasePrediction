@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for,session
 from werkzeug.utils import secure_filename
+from database.db import mysqlconnection
 import os
 import pandas as pd
 
@@ -31,11 +32,43 @@ def upload_invoice_post():
     
     df = pd.read_excel(filepath)
     
+    total_records  = len(df)
+    
+    conn = mysqlconnection()
+    cursor = conn.cursor()
+        #---------------------------
+    # insert data in upload details
+    #------------------------------
+    
+    cursor.callproc('USP_INSERT_UPLOAD',
+    (
+        filename,
+        session['Username'],
+        total_records,
+        0,
+        0,
+        'Processing',
+        'Excel Upload Started'
+    ))
+    
+    upload_id = None
+
+    for result in cursor.stored_results():
+        row = result.fetchone()
+        upload_id = row[0]
+
+    print("Upload ID :", upload_id)
+    
+    conn.commit()
+    cursor.close()
+    conn.close()    
+
+    
     print("First 5 rows")
-    df.head(5)
+    print(df.head(5))
     
     print("Last 5 rows")
-    df.tail(5)
+    print(df.tail(5))
     
 
     print("Saved at:", os.path.abspath(filepath))
