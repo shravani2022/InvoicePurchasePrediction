@@ -59,6 +59,19 @@ def upload_invoice_post():
 
     print("Upload ID :", upload_id)
     
+    for index,row in df.iterrows():
+        
+        print("-----------------")
+        
+        print("Row number",index + 1)
+        
+        print("Supplier Number :", row["Supplier Number"])
+        print("Supplier Name :", row["Supplier Name"])
+        print("Invoice Number :", row["Invoice Number"])
+        print("Gross Total :", row["Gross Total"])
+
+        break
+    
     conn.commit()
     cursor.close()
     conn.close()    
